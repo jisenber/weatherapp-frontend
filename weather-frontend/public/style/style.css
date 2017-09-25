@@ -1,3 +1,12 @@
-div nav ul li button {
-  margin: 2%
+.container-fluid {
+  display: flex;
+  margin: 1em;
+}
+
+ul li {
+  margin: 1em;
+}
+
+input {
+  margin: 1%
 }
