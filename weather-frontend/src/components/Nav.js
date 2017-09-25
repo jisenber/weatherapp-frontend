@@ -7,7 +7,7 @@ class Nav extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {username: '', password: '', signInClicked: false, signUpClicked: false};
+    this.state = {username: '', password: '', signInClicked: false, signUpClicked: false, isLoggedIn: false, userHistory:[]};
     this.AuthService = new AuthService();
 
   }
@@ -28,8 +28,18 @@ class Nav extends Component {
 
   handleLogIn(event) {
     event.preventDefault();
-    this.AuthService.logIn(this.state.username, this.state.password);
+    var self = this; //takes 'this' reference the component
+    self.AuthService.logIn(this.state.username, this.state.password, function(data) {
+      if(data) {
+        self.setState({
+          isLoggedIn: true,
+          userHistory: data,
+          signInClicked: false
+        });
+      }
+    });
   }
+
 
   isClicked(e) {
     if (e.target.value === 'Sign In') {
@@ -45,15 +55,33 @@ class Nav extends Component {
     }
   }
 
+  // componentWillUpdate() {
+  //   var user = this.AuthService.checkLogIn()
+  //   if(user) {
+  //     this.setState({isLoggedIn: true});
+  //   }
+  // }
+
   render () {
     return (
       <div className="container-fluid">
         <nav className="navbar navbar-default navbar-fixed-top">
-          <ul id="nav_pills" className="nav nav-pills" role="tablist">
-            <li><button type="button" className="btn btn-primary" value="Sign In" onClick={this.isClicked.bind(this)}>Sign In</button>
-            </li>
-            <li><button type="button" className="btn btn-primary" value="Sign Up" onClick={this.isClicked.bind(this)}>Sign up</button></li>
-          </ul>
+          <div className="authedNav"  style={{display: this.state.isLoggedIn ? 'inline': 'none'}}>
+            <ul id="nav_pills" className="nav nav-pills" role="tablist">
+              <li><button type="button" className="btn btn-primary" value="Log Out">Log Out</button>
+              </li>
+              <li><button type="button" className="btn btn-primary" value="View History">View History</button></li>
+            </ul>
+          </div>
+
+          <div className="unauthedNav" style={{display: !this.state.isLoggedIn ? 'inline': 'none'}}>
+            <ul id="nav_pills" className="nav nav-pills" role="tablist">
+              <li><button type="button" className="btn btn-primary" value="Sign In" onClick={this.isClicked.bind(this)}>Sign In</button>
+              </li>
+              <li><button type="button" className="btn btn-primary" value="Sign Up" onClick={this.isClicked.bind(this)}>Sign up</button></li>
+            </ul>
+          </div>
+
           <form name="authForm" noValidate>
             <div className = "signUpDisplay" style={{display: this.state.signUpClicked ? 'inline' : 'none'}}>
               <input type="text" placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>

@@ -22,7 +22,7 @@ class AuthService {
       });
   }
 
-  logIn(username, password) {
+  logIn(username, password, cb) {
     axios({
       method: 'post',
       url: 'http://localhost:4200/login',
@@ -35,13 +35,29 @@ class AuthService {
         password: password
       }
     })
-      .then(user => {
-        console.log(`${user} logged in`);
+      .then(history => {
+        console.log(history.data);
+        cb(history.data);
       })
       .catch(err => {
         console.log(err);
+        return false;
       });
   }
+
+  // checkLogIn() {
+  //   axios({
+  //     method: 'get',
+  //     url: 'http://localhost:4200',
+  //   })
+  //     .then(user => {
+  //       console.log(user);
+  //       return user;
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // }
 }
 
 export default AuthService;
