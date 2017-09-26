@@ -1,6 +1,26 @@
-.container-fluid {
+.navContainer {
   display: flex;
-  margin: 1em;
+  margin: auto;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.weatherContainer {
+  display: inline-flex;
+  margin: 2em;
+  padding: 2em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+form#weatherFields {
+  text-align: center;
+}
+ul.searchFields {
+  list-style: none;
+  text-align: left;
+  margin-left: -3em;
+
 }
 
 ul li {
