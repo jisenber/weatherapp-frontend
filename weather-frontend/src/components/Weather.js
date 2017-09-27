@@ -1,33 +1,52 @@
 import React, { Component } from 'react';
 import WeatherService from './WeatherService';
-//import { GoogleApiWrapper } from 'google-maps-react'
-//import MapContainer from './MapContainer'
-
-//import GoogleMapReact from 'google-maps-react';
-
-//import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
+import DailyForecast from './DailyForecast';
 
 class Weather extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {forecast: {}, lat:'', lng:'', city:'', history:[]};
+    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], zoom: 8};
     this.weatherService = new WeatherService();
-  }
 
-  componentWillMount () {
-    console.log('mouting');
-    this.setState({
-      history: this.props.history
-    });
+
   }
 
 
   obtainForecastData(event) {
-    event.preventDefault()
-    this.weatherService.getForecast(this.state.lat, this.state.lng, function(data) {
-      console.log(data.body);
+    event.preventDefault();
+    var forecastArr = [];
+    var self = this;
+    this.weatherService.getForecast(this.state.lat, this.state.lng, function(weather) {
+      for (var key in weather) {
+        forecastArr.push(weather[key]);
+      }
+      console.log(forecastArr);
+      self.setState ({
+        forecast: forecastArr
+      });
     });
+  }
+
+  obtainLocationForecast(event) {
+    event.preventDefault();
+    var self = this
+    this.weatherService.getCoordinates(this.state.location, function(data) {
+      self.setState ({
+        lat: data.lat,
+        lng: data.lng
+      })
+      self.weatherService.getForecast(self.state.lat, self.state.lng, function(weather) {
+        var forecastArr = [];
+        for (var key in weather) {
+          forecastArr.push(weather[key]);
+        }
+        console.log(forecastArr);
+        self.setState ({
+          forecast: forecastArr
+        });
+      });
+    })
   }
 
   handleLatChange(event) {
@@ -48,22 +67,39 @@ class Weather extends Component {
     });
   }
 
+  handleLocationChange(event) {
+    this.setState({
+      location: event.target.value
+    });
+  }
+  //for time machine request: format as below. 
+  //[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone
 
   render() {
     return (
+    <div>
       <div className="searchField">
-      <form noValidate id="weatherFields">
+      <form noValidate className="weatherFields">
+        <h4> Search By Location </h4>
+        <fieldset>
+        <ul className="searchFields">
+        <li>
+          <label htmlFor="location-search">Location</label><br />
+          <input type="text" id="location-search" placeholder="Seattle, WA" onChange={this.handleLocationChange.bind(this)}/>
+        </li>
+        </ul>
+        </fieldset>
+        <button type="submit" className="btn btn-danger" onClick={this.obtainLocationForecast.bind(this)}>Get Weather</button>
+      </form>
+      <h5 className="orSplitter"> OR </h5>
+      <form noValidate className="weatherFields">
+      <h4> Search by lat, lng </h4>
         <fieldset>
           <ul className="searchFields">
-          <li>
-            <label htmlFor="city-search">City Name</label><br />
-            <input type="text" id="city-search" placeholder="e.g. Seattle, WA" onChange={this.handleCityChange.bind(this)}/>
-          </li>
             <li>
               <label htmlFor="latitude">Latitude</label><br />
               <input type="text" id="latitude" placeholder="e.g. 42.9150747" onChange={this.handleLatChange.bind(this)}required/>
             </li>
-
             <li>
               <label htmlFor="longitude">Longitude</label><br />
               <input type="text" id="longitude" placeholder="e.g. -77.784323" onChange={this.handleLngChange.bind(this)} required/>
@@ -73,9 +109,24 @@ class Weather extends Component {
 
         <button type="submit" className="btn btn-danger" onClick={this.obtainForecastData.bind(this)}>Get Weather</button>
       </form>
+      <h5 className="orSplitter"> OR </h5>
+
+      <form noValidate className="weatherFields">
+      <h4> Search Historical Data </h4>
+
+      </form>
+    </div>
+      <div className="forecastContainer" style={{display: this.state.forecast[0] ? 'inline' : 'none'}}>
+        {
+          this.state.forecast.map(function(item, i){
+            return <DailyForecast key={i} date={item.time} summary={item.summary} icon={item.icon} high={item.temperatureHigh} low={item.temperatureLow}/>
+          })
+       }
+    </div>
     </div>
     );
   }
 }
+
 
 export default Weather;

@@ -6,21 +6,37 @@
 }
 
 .weatherContainer {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   margin: 2em;
+  margin-top: 6em;
   padding: 2em;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
 }
 
-form#weatherFields {
+h2.weatherTitle {
+  display: inline-block;
+}
+
+div.searchField {
+  display: flex;
+}
+
+form.weatherFields {
   text-align: center;
+  display: flex;
+  padding: 1em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin: 2em;
+  flex-direction: column;
 }
+
 ul.searchFields {
   list-style: none;
   text-align: left;
-  margin-left: -3em;
-
+  margin: auto;
+  padding: 1em;
+  list-style-type: none;
 }
 
 ul li {
@@ -29,4 +45,39 @@ ul li {
 
 input {
   margin: 1%
+}
+
+.forecastContainer div ul {
+  display: inline;
+  list-style: none;
+  padding: 1em;
+  list-style-type: none;
+}
+
+.mapContainer {
+  width: 400px;
+  height: 300px;
+}
+
+.forecastBox  {
+  border: solid;
+  margin: 1em;
+  display: inline-flex;
+  width: 20rem;
+  height: 30rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.forecastBox ul li {
+  margin: auto;
+}
+
+.forecastDate {
+  width: 100%;
+  background-color: aliceblue;
+  text-align: center;
+}
+
+.orSplitter {
+  margin-top: 8em;
 }
