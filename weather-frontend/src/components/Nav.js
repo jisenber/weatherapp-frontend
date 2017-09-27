@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Weather from './Weather';
-import {HistoryLocation, HistoryLatLng} from './HistoryItem';
+import {HistoryLocation, HistoryLatLng, HistoryTimeForecast} from './HistoryItem';
 
 //import createReactClass from 'create-react-class';
 import AuthService from './AuthService';
@@ -138,6 +138,9 @@ class Nav extends Component {
                     <ul className="historyList">
                   {
                     this.state.userHistory.map(function(item, i){
+                      if(item.weatherDate) {
+                        return <HistoryTimeForecast key={i} date={item.dateSearched} forecastDate={item.weatherDate.slice(0,19)} location={item.locationSearched} />
+                      }
                       if(item.locationSearched.lat) {
                         return <HistoryLatLng key={i} date={item.dateSearched} lat ={item.locationSearched.lat} lng={item.locationSearched.lng}/>
                       } else {

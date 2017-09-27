@@ -34,6 +34,17 @@ class WeatherService {
       cb(latLng)
     });
   }
+
+  getTimeForecast(lat, lng, time, cb) {
+    axios({
+      method: 'get',
+      url: `http://localhost:4200/timeforecast?lat=${lat}&lng=${lng}&time=${time}`
+    })
+    .then(response => {
+      var historicForecast = response.data.daily.data;
+      cb(historicForecast);
+    });
+  }
 }
 
 export default WeatherService;

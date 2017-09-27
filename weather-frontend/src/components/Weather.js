@@ -52,7 +52,7 @@ class Weather extends Component {
 
     //check if logged in, if so, use service to update history
     if(this.props.isLoggedIn) {
-      this.authService.addHistoryEvent(this.props.username, {locationSearched: this.state.location, dateSearched: new Date(Date.now())});
+      this.authService.addHistoryEvent(this.props.username, {locationSearched: this.state.location, dateSearched: this.state.startDate});
     }
     var self = this;
     this.weatherService.getCoordinates(this.state.location, function(data) {
@@ -65,7 +65,6 @@ class Weather extends Component {
         for (var key in weather) {
           forecastArr.push(weather[key]);
         }
-        console.log(forecastArr);
         self.setState ({
           forecast: forecastArr,
         });
@@ -74,8 +73,27 @@ class Weather extends Component {
   }
 
   obtainHistoricForecastData(event) {
-    console.log(this.state.startDate);
     event.preventDefault()
+
+    if(this.props.isLoggedIn) {
+      this.authService.addHistoryEvent(this.props.username, {locationSearched: this.state.historicLocation, dateSearched: new Date(Date.now()), weatherDate:this.state.startDate});
+    }
+
+    var getUnix = moment.unix((this.state.startDate._d));
+    var validUnixTime = Math.floor(getUnix._i/1000000);
+    var self = this
+    this.weatherService.getCoordinates(this.state.historicLocation, function(data) {
+      self.setState ({
+        lat: data.lat,
+        lng: data.lng
+      });
+      self.weatherService.getTimeForecast(self.state.lat, self.state.lng, validUnixTime,function(weather) {
+
+        self.setState({
+          forecast: weather
+        });
+      });
+    });
   }
 
   handleLatChange(event) {
@@ -160,7 +178,7 @@ class Weather extends Component {
           <DatePicker
           id="calendar"
           selected={this.state.startDate}
-          onChange={this.handleDateChange}
+          onSelect={this.handleDateChange}
           />
           </li>
           </ul>
