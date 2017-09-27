@@ -45,19 +45,36 @@ class AuthService {
       });
   }
 
-  // checkLogIn() {
-  //   axios({
-  //     method: 'get',
-  //     url: 'http://localhost:4200',
-  //   })
-  //     .then(user => {
-  //       console.log(user);
-  //       return user;
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }
+  addHistoryEvent(username, params) {
+    axios({
+      method: 'post',
+      url: 'http://localhost:4200/history',
+      headers: {
+        contentType:'application/json',
+        dataType:'json'
+      },
+      data: {
+        username: username,
+        history: params
+      }
+    })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  getHistory(username, cb) {
+    axios({
+      method: 'get',
+      url: `http://localhost:4200/history?user=${username}`
+    })
+      .then(response => {
+        cb(response);
+      });
+  }
 }
 
 export default AuthService;
