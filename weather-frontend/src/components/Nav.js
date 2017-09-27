@@ -12,6 +12,8 @@ class Nav extends Component {
     this.AuthService = new AuthService();
 
   }
+
+
   //updates username dynamically to state
   handleUsernameChange(event) {
     console.log(event.target.value);
@@ -121,7 +123,7 @@ class Nav extends Component {
       </div>
       <div className="weatherContainer">
         <h2 className="weatherTitle">Welcome to Weather Checker</h2><br />
-      <Weather username={this.state.username} history={this.state.history}/>
+      <Weather username={this.state.username} history={this.state.history} isLoggedIn={this.state.isLoggedIn} />
       </div>
     </div>
     );

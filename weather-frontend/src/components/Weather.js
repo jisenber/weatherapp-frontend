@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import WeatherService from './WeatherService';
 import DailyForecast from './DailyForecast';
+import AuthService from './AuthService';
+
 
 class Weather extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], zoom: 8};
+    this.state = {forecast: [], lat:'', lng:'', location:'', history:[]};
     this.weatherService = new WeatherService();
-
-
+    this.authService = new AuthService();
   }
 
 
   obtainForecastData(event) {
     event.preventDefault();
+
+    //check if logged in, if so, use service to update history
+    if(this.props.isLoggedIn) {
+      this.authService.addHistoryEvent(this.props.username, {locationSearched: {lat: this.state.lat, lng: this.state.lng}, dateSearched: new Date(Date.now())})
+    }
     var forecastArr = [];
     var self = this;
     this.weatherService.getForecast(this.state.lat, this.state.lng, function(weather) {
@@ -23,19 +29,24 @@ class Weather extends Component {
       }
       console.log(forecastArr);
       self.setState ({
-        forecast: forecastArr
+        forecast: forecastArr,
       });
     });
   }
 
   obtainLocationForecast(event) {
     event.preventDefault();
-    var self = this
+
+    //check if logged in, if so, use service to update history
+    if(this.props.isLoggedIn) {
+      this.authService.addHistoryEvent(this.props.username, {locationSearched: this.state.location, dateSearched: new Date(Date.now())});
+    }
+    var self = this;
     this.weatherService.getCoordinates(this.state.location, function(data) {
       self.setState ({
         lat: data.lat,
         lng: data.lng
-      })
+      });
       self.weatherService.getForecast(self.state.lat, self.state.lng, function(weather) {
         var forecastArr = [];
         for (var key in weather) {
@@ -43,10 +54,10 @@ class Weather extends Component {
         }
         console.log(forecastArr);
         self.setState ({
-          forecast: forecastArr
+          forecast: forecastArr,
         });
       });
-    })
+    });
   }
 
   handleLatChange(event) {
@@ -72,7 +83,7 @@ class Weather extends Component {
       location: event.target.value
     });
   }
-  //for time machine request: format as below. 
+  //for time machine request: format as below.
   //[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone
 
   render() {
