@@ -80,3 +80,18 @@ input {
 .orSplitter {
   margin-top: 8em;
 }
+
+
+
+ul.historyList {
+  list-style-type: none;
+}
+
+.dropdown-menu {
+  min-width: 250px;
+}
+.historyListItem {
+  list-style-type: none;
+  margin-left: -2em;
+
+}

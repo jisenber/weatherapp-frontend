@@ -3,11 +3,7 @@ import React, { Component } from 'react';
 class HistoryItem extends Component {
   render() {
     return (
-      <div className="historyBox">
-        <ul>
-          <li className="historyList">{this.props.history}</li>
-        </ul>
-      </div>
+      <li className="historyListItem"><b>date:</b> {new Date(this.props.date).toLocaleString()} <br/> <b>location:</b> {this.props.location}</li>
     );
   }
 }

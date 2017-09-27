@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Weather from './Weather'
+import HistoryItem from './HistoryItem'
 
 //import createReactClass from 'create-react-class';
 import AuthService from './AuthService';
@@ -8,11 +9,57 @@ class Nav extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {username: '', password: '', signInClicked: false, signUpClicked: false, isLoggedIn: false, userHistory:[]};
+    this.state = {username: '', password: '', signInClicked: false, signUpClicked: false, isLoggedIn: false, userHistory:[], displayHistory: false};
     this.AuthService = new AuthService();
 
   }
 
+  // componentWillUpdate() {
+  //   var checkArr = this.state.userHistory;
+  //   var self = this;
+  //   //if the user is logged in but their history isnt ready to render..
+  //
+  //   if(!checkArr.length && this.state.isLoggedIn) {
+  //     console.log('RETRIEVING HISTORY');
+  //     this.AuthService.getHistory(this.state.username, function(history) {
+  //       console.log('HISTORY RETRIEVED', history);
+  //       self.setState({
+  //         userHistory: history
+  //       });
+  //     });
+  //   }
+  // }
+
+  // retrieveHistory(event) {
+  //   var self = this
+  //   event.preventDefault()
+  //   if(self.state.displayHistory) {
+  //     self.setState({
+  //       displayHistory:false
+  //     });
+  //   } else {
+  //     this.AuthService.getHistory(this.state.username, function(history) {
+  //       console.log('HISTORY RETRIEVED', history);
+  //       self.setState({
+  //       userHistory: history,
+  //       displayHistory: true
+  //     });
+  //   });
+  //   }
+  // }
+
+  toggleDisplayHistory(event) {
+    event.preventDefault();
+    if(this.state.displayHistory) {
+      this.setState({
+        displayHistory: false
+      });
+    } else {
+      this.setState({
+        displayHistory: true
+      });
+    }
+  }
 
   //updates username dynamically to state
   handleUsernameChange(event) {
@@ -65,14 +112,20 @@ class Nav extends Component {
     }
   }
 
+
   //resets state back to initial state
   logout() {
+    var username = this.refs.username
+    var password = this.refs.password
+
     this.setState({
       isLoggedIn: false,
       userHistory: [],
       username: '',
       password: ''
     });
+    username.value = ''
+    password.value = ''
   }
 
 
@@ -88,9 +141,15 @@ class Nav extends Component {
               </li>
               <li>
                 <div className="dropdown">
-                  <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">View History</button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                  {this.state.history}
+                  <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleDisplayHistory.bind(this)}>View History</button>
+                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{display: this.state.displayHistory ? 'inline' : 'none'}}>
+                    <ul className="historyList">
+                  {
+                    this.state.userHistory.map(function(item, i){
+                      return <HistoryItem key={i} date={item.dateSearched} location={item.locationSearched}/>
+                    })
+                 }
+                  </ul>
                 </div>
               </div>
               </li>
@@ -114,8 +173,8 @@ class Nav extends Component {
             </div>
 
             <div className = "signInDisplay" style={{display: this.state.signInClicked ? 'inline' : 'none'}}>
-              <input type="text" placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
-              <input type="text" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
+              <input type="text" ref='username' placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
+              <input type="text" ref='password' placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
               <button type="submit" className = "btn btn-primary" id="signInBtn" onClick={this.handleLogIn.bind(this)}>Submit</button>
             </div>
           </form>

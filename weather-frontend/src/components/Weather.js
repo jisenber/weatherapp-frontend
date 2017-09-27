@@ -83,6 +83,8 @@ class Weather extends Component {
       location: event.target.value
     });
   }
+
+  
   //for time machine request: format as below.
   //[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone
 

@@ -65,6 +65,16 @@ class AuthService {
         console.log(err);
       });
   }
+
+  getHistory(username, cb) {
+    axios({
+      method: 'get',
+      url: `http://localhost:4200/history?user=${username}`
+    })
+      .then(response => {
+        cb(response);
+      });
+  }
 }
 
 export default AuthService;
