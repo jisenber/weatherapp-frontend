@@ -2,15 +2,28 @@ import React, { Component } from 'react';
 import WeatherService from './WeatherService';
 import DailyForecast from './DailyForecast';
 import AuthService from './AuthService';
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+import 'react-datepicker/dist/react-datepicker.css'
+import '../style/calstyle.css' //override of some datepicker css
 
 
 class Weather extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {forecast: [], lat:'', lng:'', location:'', history:[]};
+    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], startDate: moment(), historicLocation:''};
     this.weatherService = new WeatherService();
     this.authService = new AuthService();
+
+    this.handleDateChange = this.handleDateChange.bind(this);
+
+  }
+
+  handleDateChange(date) {
+    this.setState({
+      startDate: date
+    });
   }
 
 
@@ -60,6 +73,11 @@ class Weather extends Component {
     });
   }
 
+  obtainHistoricForecastData(event) {
+    console.log(this.state.startDate);
+    event.preventDefault()
+  }
+
   handleLatChange(event) {
     this.setState({
       lat: event.target.value
@@ -84,7 +102,12 @@ class Weather extends Component {
     });
   }
 
-  
+  handleHistoricLocationChange(event) {
+    this.setState({
+      historicLocation: event.target.value
+    })
+  }
+
   //for time machine request: format as below.
   //[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone
 
@@ -124,9 +147,25 @@ class Weather extends Component {
       </form>
       <h5 className="orSplitter"> OR </h5>
 
-      <form noValidate className="weatherFields">
+      <form className="weatherFields">
       <h4> Search Historical Data </h4>
-
+      <fieldset>
+        <ul className="searchFields">
+          <li>
+            <label htmlFor="historicLocation">Location</label><br />
+            <input type="text" id="historicLocation" placeholder="Atlantis" onChange={this.handleHistoricLocationChange.bind(this)}required/>
+          </li>
+          <li>
+          <label htmlFor="calendar">Date</label><br />
+          <DatePicker
+          id="calendar"
+          selected={this.state.startDate}
+          onChange={this.handleDateChange}
+          />
+          </li>
+          </ul>
+      </fieldset>
+      <button type="submit" className="btn btn-danger" onClick={this.obtainHistoricForecastData.bind(this)}>Get Weather</button>
       </form>
     </div>
       <div className="forecastContainer" style={{display: this.state.forecast[0] ? 'inline' : 'none'}}>

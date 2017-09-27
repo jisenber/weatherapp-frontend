@@ -1,52 +1,28 @@
 import React, { Component } from 'react';
-import Weather from './Weather'
-import HistoryItem from './HistoryItem'
+import Weather from './Weather';
+import {HistoryLocation, HistoryLatLng} from './HistoryItem';
 
 //import createReactClass from 'create-react-class';
 import AuthService from './AuthService';
+
+function validateSignUp(username, password, passwordRepeat) {
+  if(!username || !password || ! passwordRepeat ) {
+    return false;
+  } else if (password !== passwordRepeat) {
+    return 'Passwords do not match';
+  } else {
+    return true;
+  }
+}
 
 class Nav extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {username: '', password: '', signInClicked: false, signUpClicked: false, isLoggedIn: false, userHistory:[], displayHistory: false};
+    this.state = {username: '', password: '', passwordRepeat:'', signInClicked: false, signUpClicked: false, isLoggedIn: false, userHistory:[], displayHistory: false};
     this.AuthService = new AuthService();
 
   }
-
-  // componentWillUpdate() {
-  //   var checkArr = this.state.userHistory;
-  //   var self = this;
-  //   //if the user is logged in but their history isnt ready to render..
-  //
-  //   if(!checkArr.length && this.state.isLoggedIn) {
-  //     console.log('RETRIEVING HISTORY');
-  //     this.AuthService.getHistory(this.state.username, function(history) {
-  //       console.log('HISTORY RETRIEVED', history);
-  //       self.setState({
-  //         userHistory: history
-  //       });
-  //     });
-  //   }
-  // }
-
-  // retrieveHistory(event) {
-  //   var self = this
-  //   event.preventDefault()
-  //   if(self.state.displayHistory) {
-  //     self.setState({
-  //       displayHistory:false
-  //     });
-  //   } else {
-  //     this.AuthService.getHistory(this.state.username, function(history) {
-  //       console.log('HISTORY RETRIEVED', history);
-  //       self.setState({
-  //       userHistory: history,
-  //       displayHistory: true
-  //     });
-  //   });
-  //   }
-  // }
 
   toggleDisplayHistory(event) {
     event.preventDefault();
@@ -63,7 +39,6 @@ class Nav extends Component {
 
   //updates username dynamically to state
   handleUsernameChange(event) {
-    console.log(event.target.value);
     this.setState({username: event.target.value});
   }
 
@@ -72,9 +47,25 @@ class Nav extends Component {
     this.setState({password: event.target.value});
   }
 
+  //updates password repeat dynamically to state
+  handlePasswordRepeatChange(event) {
+    this.setState({passwordRepeat: event.target.value});
+  }
+
   //signs up the user with password and username set in state
   handleSignUp(event) {
     event.preventDefault();
+
+    //validation steps
+    var validSignUp = validateSignUp(this.state.username, this.state.password, this.state.passwordRepeat)
+    if(!validSignUp) {
+      alert('invalid username or password')
+      return
+    } else if (validSignUp === 'Passwords do not match') {
+      alert('passwords do not match')
+      return;
+    }
+
     var self = this;
     self.AuthService.signUp(this.state.username, this.state.password);
     self.setState({
@@ -84,6 +75,7 @@ class Nav extends Component {
   }
 
   handleLogIn(event) {
+
     event.preventDefault();
     var self = this; //takes 'this' reference the component
     self.AuthService.logIn(this.state.username, this.state.password, function(data) {
@@ -146,7 +138,11 @@ class Nav extends Component {
                     <ul className="historyList">
                   {
                     this.state.userHistory.map(function(item, i){
-                      return <HistoryItem key={i} date={item.dateSearched} location={item.locationSearched}/>
+                      if(item.locationSearched.lat) {
+                        return <HistoryLatLng key={i} date={item.dateSearched} lat ={item.locationSearched.lat} lng={item.locationSearched.lng}/>
+                      } else {
+                        return <HistoryLocation key={i} date={item.dateSearched} location={item.locationSearched}/>
+                      }
                     })
                  }
                   </ul>
@@ -164,11 +160,11 @@ class Nav extends Component {
             </ul>
           </div>
 
-          <form name="authForm" noValidate>
+          <form name="authForm">
             <div className = "signUpDisplay" style={{display: this.state.signUpClicked ? 'inline' : 'none'}}>
-              <input type="text" placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
+              <input type="text" placeholder="username" onChange={this.handleUsernameChange.bind(this)} required/>
               <input type="text" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
-              <input type="text" placeholder = "repeat password"/>
+              <input type="text" placeholder = "repeat password" onChange={this.handlePasswordRepeatChange.bind(this)}/>
               <button type="submit" className = "btn btn-primary" id="signUpBtn" onClick={this.handleSignUp.bind(this)}>Submit</button>
             </div>
 
@@ -182,7 +178,7 @@ class Nav extends Component {
       </div>
       <div className="weatherContainer">
         <h2 className="weatherTitle">Welcome to Weather Checker</h2><br />
-      <Weather username={this.state.username} history={this.state.history} isLoggedIn={this.state.isLoggedIn} />
+      <Weather username={this.state.username} history={this.state.userHistory} isLoggedIn={this.state.isLoggedIn} />
       </div>
     </div>
     );

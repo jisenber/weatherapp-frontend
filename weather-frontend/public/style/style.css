@@ -95,3 +95,8 @@ ul.historyList {
   margin-left: -2em;
 
 }
+
+.react-datepicker {
+  position: fixed;
+  font-size: 1.0rem;
+}
