@@ -72,7 +72,7 @@ class AuthService {
       url: `http://localhost:4200/history?user=${username}`
     })
       .then(response => {
-        cb(response);
+        cb(response.data);
       });
   }
 }

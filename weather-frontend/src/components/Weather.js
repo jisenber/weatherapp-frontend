@@ -44,6 +44,12 @@ class Weather extends Component {
       console.log(forecastArr);
       self.setState ({
         forecast: forecastArr,
+        one: forecastArr[0].temperatureHigh,
+        two: forecastArr[1].temperatureHigh,
+        three: forecastArr[2].temperatureHigh,
+        four: forecastArr[3].temperatureHigh,
+        five: forecastArr[4].temperatureHigh,
+        displayBarChart:true
       });
     });
   }
