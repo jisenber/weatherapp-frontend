@@ -24,6 +24,22 @@ class Nav extends Component {
 
   }
 
+  componentDidMount() {
+    console.log('mounted');
+    if (localStorage.getItem('weatherUsername')) {
+      var self = this;
+      var user = localStorage.getItem('weatherUsername');
+      this.AuthService.getHistory(user, function(data) {
+        console.log(data);
+        self.setState ({
+          username: user,
+          isLoggedIn: true,
+          userHistory: data
+        })
+      })
+    }
+  }
+
   toggleDisplayHistory(event) {
     event.preventDefault();
     if(this.state.displayHistory) {
@@ -86,6 +102,7 @@ class Nav extends Component {
           signInClicked: false,
         });
       }
+      localStorage.setItem('weatherUsername', self.state.username);
     });
   }
 
@@ -107,6 +124,8 @@ class Nav extends Component {
 
   //resets state back to initial state
   logout() {
+    localStorage.removeItem('weatherUsername');
+
     var username = this.refs.username
     var password = this.refs.password
 
@@ -166,14 +185,14 @@ class Nav extends Component {
           <form name="authForm">
             <div className = "signUpDisplay" style={{display: this.state.signUpClicked ? 'inline' : 'none'}}>
               <input type="text" placeholder="username" onChange={this.handleUsernameChange.bind(this)} required/>
-              <input type="text" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
-              <input type="text" placeholder = "repeat password" onChange={this.handlePasswordRepeatChange.bind(this)}/>
+              <input type="password" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
+              <input type="password" placeholder = "repeat password" onChange={this.handlePasswordRepeatChange.bind(this)}/>
               <button type="submit" className = "btn btn-primary" id="signUpBtn" onClick={this.handleSignUp.bind(this)}>Submit</button>
             </div>
 
             <div className = "signInDisplay" style={{display: this.state.signInClicked ? 'inline' : 'none'}}>
               <input type="text" ref='username' placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
-              <input type="text" ref='password' placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
+              <input type="password" ref='password' placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
               <button type="submit" className = "btn btn-primary" id="signInBtn" onClick={this.handleLogIn.bind(this)}>Submit</button>
             </div>
           </form>

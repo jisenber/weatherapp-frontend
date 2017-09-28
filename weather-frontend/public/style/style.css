@@ -1,3 +1,14 @@
+@import "../node_modules/react-vis/dist/style";
+@import "../node_modules/react-vis/dist/styles/legends";
+
+ul li {
+  margin: 1em;
+}
+
+input {
+  margin: 1%
+}
+
 .navContainer {
   display: flex;
   margin: auto;
@@ -39,37 +50,28 @@ ul.searchFields {
   list-style-type: none;
 }
 
-ul li {
-  margin: 1em;
-}
 
-input {
-  margin: 1%
-}
 
 .forecastContainer div ul {
   display: inline;
   list-style: none;
   padding: 1em;
   list-style-type: none;
+  text-align: center;
+  margin-left: -1.9em;
 }
 
-.mapContainer {
-  width: 400px;
-  height: 300px;
-}
 
-.forecastBox  {
-  border: solid;
-  margin: 1em;
-  display: inline-flex;
-  width: 20rem;
-  height: 30rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+.forecastContainer {
+  display: flex;
+
 }
 
 .forecastBox ul li {
-  margin: auto;
+  list-style-type: none;
+  list-style: none;
+  width: 100%
 }
 
 .forecastDate {
@@ -77,6 +79,29 @@ input {
   background-color: aliceblue;
   text-align: center;
 }
+
+.mapContainer {
+  width: 400px;
+  height: 300px;
+}
+
+div.forecastBox  {
+  border: solid;
+  margin: 1em;
+  display: inline-flex;
+  width: 15rem;
+  height: 30rem;
+
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-animation: fadein 1s; /* Safari, Chrome and Opera > 12.1 */
+     -moz-animation: fadein 1s; /* Firefox < 16 */
+      -ms-animation: fadein 1s; /* Internet Explorer */
+       -o-animation: fadein 1s; /* Opera < 12.1 */
+          animation: fadein 1s;
+}
+
+}
+
 
 .orSplitter {
   margin-top: 8em;
@@ -105,4 +130,59 @@ li.historyListItem:hover {
 .react-datepicker {
   position: fixed;
   font-size: 1.0rem;
+}
+
+
+.dataViz{
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+}
+
+
+
+span#xAxisLabel {
+  font-size: 16px;
+  position: absolute;
+  top: 19em;
+  left: 22em;
+}
+
+span#yAxisLabel {
+  font-size: 16px;
+  position: absolute;
+  left: 5em;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
