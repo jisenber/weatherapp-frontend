@@ -41,7 +41,6 @@ class WeatherService {
       url: `http://localhost:4200/timeforecast?lat=${lat}&lng=${lng}&time=${time}`
     })
     .then(response => {
-      console.log(response);
       var historicForecast = response.data.daily.data;
       cb(historicForecast);
     });
