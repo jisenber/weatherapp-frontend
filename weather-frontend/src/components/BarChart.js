@@ -10,7 +10,7 @@ class BarChart extends Component {
         <HorizontalGridLines />
         <VerticalBarSeries
           data={this.props.data}/>
-        <XAxis tickValues={[Math.round(0), 1, 2, 3, 4]}/>
+        <XAxis tickValues={this.props.ticks}/>
         <YAxis />
       </XYPlot>
     )

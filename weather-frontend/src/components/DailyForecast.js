@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 class DailyForecast extends Component {
   render() {
     return (

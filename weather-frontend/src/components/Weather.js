@@ -8,12 +8,11 @@ import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css'
 import '../style/calstyle.css' //override of some datepicker css
 
-
 class Weather extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], startDate: moment(), historicLocation:'', displayBarChart:false, one:'', two:'', three:'', four:'', five:''};
+    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], startDate: moment(), historicLocation:'', displayBarChart:false, displayHistoricChart: false, one:'', two:'', three:'', four:'', five:''};
     this.weatherService = new WeatherService();
     this.authService = new AuthService();
 
@@ -41,7 +40,6 @@ class Weather extends Component {
       for (var key in weather) {
         forecastArr.push(weather[key]);
       }
-      console.log(forecastArr);
       self.setState ({
         forecast: forecastArr,
         one: forecastArr[0].temperatureHigh,
@@ -101,9 +99,13 @@ class Weather extends Component {
         lng: data.lng
       });
       self.weatherService.getTimeForecast(self.state.lat, self.state.lng, validUnixTime,function(weather) {
-
+        console.log(weather[0]);
         self.setState({
-          forecast: weather
+          forecast: weather,
+          one: weather[0].temperatureHigh,
+          two: weather[0].temperatureLow,
+          displayBarChart: false,
+          displayHistoricChart: true
         });
       });
     });
@@ -200,15 +202,20 @@ class Weather extends Component {
         { // eslint-disable-next-line
           this.state.forecast.map(function(item, i){
             while(i < 5) {
-              return <DailyForecast key={i} date={item.time} summary={item.summary} icon={item.icon} high={item.temperatureHigh} low={item.temperatureLow}/>
+                return <DailyForecast key={i} date={item.time} summary={item.summary} high={item.temperatureHigh} low={item.temperatureLow}/>
             }
           })
        }
     </div>
     <div className = "dataViz" style={{display: this.state.displayBarChart ? 'flex' : 'none'}}>
-      <BarChart yTitle="Temperature Highs (Fahrenheit)" xTitle="Days from Date Searched" data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}, {x:2, y:this.state.three},{x:3, y:this.state.four}, {x:4, y:this.state.five}]}/>
+      <BarChart  data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}, {x:2, y:this.state.three},{x:3, y:this.state.four}, {x:4, y:this.state.five}]}/>
       <span id = "xAxisLabel">Days from Date Searched</span>
       <span id = "yAxisLabel">Temperature highs (Fahrenheit)</span>
+    </div>
+    <div className = "dataViz" style={{display: this.state.displayHistoricChart ? 'flex' : 'none'}}>
+      <BarChart data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}]}/>
+      <span id = "xAxisLabel">High and Low (Fahrenheit)</span>
+      <span id = "yAxisLabel">Temperature (Fahrenheit)</span>
     </div>
 
     </div>
