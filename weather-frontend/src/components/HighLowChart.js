@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
 import {XYPlot, XAxis, YAxis, HorizontalGridLines, VerticalBarSeries} from 'react-vis';
 
-class BarChart extends Component {
+
+class HighLowChart extends Component {
   render () {
     return (
       <XYPlot
-      width={500}
+      xType="category"
+      width={400}
       height={300}
-      xDomain ={[0,4]}
       yDomain = {[0,100]}
+      margin={{left: 100, right: 100}}
       >
         <HorizontalGridLines />
         <VerticalBarSeries
           data={this.props.data}/>
-        <XAxis tickValues = {[0,1,2,3,4]}/>
-        <YAxis/>
+        <XAxis/>
+        <YAxis left={-100}/>
       </XYPlot>
     )
   }
 }
 
-export default BarChart
+export default HighLowChart
