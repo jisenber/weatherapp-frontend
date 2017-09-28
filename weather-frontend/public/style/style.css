@@ -1,3 +1,6 @@
+@import "../node_modules/react-vis/dist/style";
+@import "../node_modules/react-vis/dist/styles/legends";
+
 .navContainer {
   display: flex;
   margin: auto;
@@ -47,11 +50,17 @@ input {
   margin: 1%
 }
 
+
+
 .forecastContainer div ul {
   display: inline;
   list-style: none;
   padding: 1em;
   list-style-type: none;
+}
+
+.forecastContainer {
+  display: flex;
 }
 
 .mapContainer {
@@ -63,7 +72,7 @@ input {
   border: solid;
   margin: 1em;
   display: inline-flex;
-  width: 20rem;
+  width: 15rem;
   height: 30rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -105,4 +114,28 @@ li.historyListItem:hover {
 .react-datepicker {
   position: fixed;
   font-size: 1.0rem;
+}
+
+
+.dataViz{
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2em;
+}
+
+span#xAxisLabel {
+  font-size: 16px;
+  position: absolute;
+  top: 19em;
+  left: 22em;
+}
+
+span#yAxisLabel {
+  font-size: 16px;
+  position: absolute;
+  left: 5em;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
 }

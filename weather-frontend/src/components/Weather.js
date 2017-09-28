@@ -3,6 +3,7 @@ import WeatherService from './WeatherService';
 import DailyForecast from './DailyForecast';
 import AuthService from './AuthService';
 import DatePicker from 'react-datepicker';
+import BarChart from './BarChart'
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css'
 import '../style/calstyle.css' //override of some datepicker css
@@ -12,7 +13,7 @@ class Weather extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], startDate: moment(), historicLocation:''};
+    this.state = {forecast: [], lat:'', lng:'', location:'', history:[], startDate: moment(), historicLocation:'', displayBarChart:false, one:'', two:'', three:'', four:'', five:''};
     this.weatherService = new WeatherService();
     this.authService = new AuthService();
 
@@ -67,6 +68,12 @@ class Weather extends Component {
         }
         self.setState ({
           forecast: forecastArr,
+          one: forecastArr[0].temperatureHigh,
+          two: forecastArr[1].temperatureHigh,
+          three: forecastArr[2].temperatureHigh,
+          four: forecastArr[3].temperatureHigh,
+          five: forecastArr[4].temperatureHigh,
+          displayBarChart:true
         });
       });
     });
@@ -126,12 +133,9 @@ class Weather extends Component {
     })
   }
 
-  //for time machine request: format as below.
-  //[YYYY]-[MM]-[DD]T[HH]:[MM]:[SS][timezone
-
   render() {
     return (
-    <div>
+      <div>
       <div className="searchField">
       <form noValidate className="weatherFields">
         <h4> Search By Location </h4>
@@ -186,13 +190,21 @@ class Weather extends Component {
       <button type="submit" className="btn btn-danger" onClick={this.obtainHistoricForecastData.bind(this)}>Get Weather</button>
       </form>
     </div>
-      <div className="forecastContainer" style={{display: this.state.forecast[0] ? 'inline' : 'none'}}>
-        {
+      <div className="forecastContainer" style={{display: this.state.forecast[0] ? 'flex' : 'none'}}>
+        { // eslint-disable-next-line
           this.state.forecast.map(function(item, i){
-            return <DailyForecast key={i} date={item.time} summary={item.summary} icon={item.icon} high={item.temperatureHigh} low={item.temperatureLow}/>
+            while(i < 5) {
+              return <DailyForecast key={i} date={item.time} summary={item.summary} icon={item.icon} high={item.temperatureHigh} low={item.temperatureLow}/>
+            }
           })
        }
     </div>
+    <div className = "dataViz" style={{display: this.state.displayBarChart ? 'flex' : 'none'}}>
+      <BarChart yTitle="Temperature Highs (Fahrenheit)" xTitle="Days from Date Searched" data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}, {x:2, y:this.state.three},{x:3, y:this.state.four}, {x:4, y:this.state.five}]}/>
+      <span id = "xAxisLabel">Days from Date Searched</span>
+      <span id = "yAxisLabel">Temperature highs (Fahrenheit)</span>
+    </div>
+
     </div>
     );
   }
