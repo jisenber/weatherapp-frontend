@@ -4,6 +4,7 @@ import DailyForecast from './DailyForecast';
 import AuthService from './AuthService';
 import DatePicker from 'react-datepicker';
 import BarChart from './BarChart'
+import HighLowChart from './HighLowChart'
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css'
 import '../style/calstyle.css' //override of some datepicker css
@@ -47,7 +48,8 @@ class Weather extends Component {
         three: forecastArr[2].temperatureHigh,
         four: forecastArr[3].temperatureHigh,
         five: forecastArr[4].temperatureHigh,
-        displayBarChart:true
+        displayBarChart:true,
+        displayHistoricChart: false
       });
     });
   }
@@ -77,7 +79,8 @@ class Weather extends Component {
           three: forecastArr[2].temperatureHigh,
           four: forecastArr[3].temperatureHigh,
           five: forecastArr[4].temperatureHigh,
-          displayBarChart:true
+          displayBarChart:true,
+          displayHistoricChart: false
         });
       });
     });
@@ -144,6 +147,7 @@ class Weather extends Component {
   render() {
     return (
       <div>
+      <div className = "searchFieldcontainer">
       <div className="searchField">
       <form noValidate className="weatherFields">
         <h4> Search By Location </h4>
@@ -197,7 +201,9 @@ class Weather extends Component {
       </fieldset>
       <button type="submit" className="btn btn-danger" onClick={this.obtainHistoricForecastData.bind(this)}>Get Weather</button>
       </form>
-    </div>
+      </div>
+      </div>
+    <div className="containerExtraordinaire">
       <div className="forecastContainer" style={{display: this.state.forecast[0] ? 'flex' : 'none'}}>
         { // eslint-disable-next-line
           this.state.forecast.map(function(item, i){
@@ -207,16 +213,20 @@ class Weather extends Component {
           })
        }
     </div>
+  <div className= "dataVizContainer">
     <div className = "dataViz" style={{display: this.state.displayBarChart ? 'flex' : 'none'}}>
-      <BarChart  data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}, {x:2, y:this.state.three},{x:3, y:this.state.four}, {x:4, y:this.state.five}]}/>
+      <BarChart data={[{x:0, y:this.state.one}, {x:1, y:this.state.two}, {x:2, y:this.state.three},{x:3, y:this.state.four}, {x:4, y:this.state.five}]}/>
       <span id = "xAxisLabel">Days from Date Searched</span>
       <span id = "yAxisLabel">Temperature highs (Fahrenheit)</span>
     </div>
+
     <div className = "dataViz" style={{display: this.state.displayHistoricChart ? 'flex' : 'none'}}>
-      <BarChart data ={[{x: 0, y:this.state.one}, {x:1, y:this.state.two}]}/>
-      <span id = "xAxisLabel">High and Low (Fahrenheit)</span>
-      <span id = "yAxisLabel">Temperature (Fahrenheit)</span>
+      <HighLowChart data ={[{x:'high', y:this.state.one}, {x:'low', y:this.state.two}]}/>
+      <span id = "xHighLowAxis">High and Low (Fahrenheit)</span>
+      <span id = "yHighLowAxis">Temperature (Fahrenheit)</span>
     </div>
+  </div>
+  </div>
 
     </div>
     );

@@ -15,6 +15,10 @@ input {
   justify-content: center;
   align-items: flex-start;
 }
+.searchFieldcontainer {
+  display: flex;
+  justify-content: center;
+}
 
 .weatherContainer {
   display: flex;
@@ -23,6 +27,10 @@ input {
   margin-top: 6em;
   padding: 2em;
   align-items: center;
+}
+
+.orSplitter {
+  margin-top: 8em;
 }
 
 h2.weatherTitle {
@@ -50,6 +58,11 @@ ul.searchFields {
   list-style-type: none;
 }
 
+.containerExtraordinaire {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: row wrap;
+}
 
 
 .forecastContainer div ul {
@@ -64,7 +77,7 @@ ul.searchFields {
 
 
 .forecastContainer {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
 
 }
@@ -104,12 +117,6 @@ div.forecastBox  {
 }
 
 
-.orSplitter {
-  margin-top: 8em;
-}
-
-
-
 ul.historyList {
   list-style-type: none;
   width: 30rem;
@@ -133,12 +140,14 @@ li.historyListItem:hover {
   font-size: 1.0rem;
 }
 
+.dataVizContainer {
+  display: inline-flex;
+  justify-content: center;
+}
 
 .dataViz{
-  display: flex;
+  display: inline-flex;
   position: relative;
-  align-items: center;
-  justify-content: center;
   margin-top: 2em;
 }
 
@@ -147,14 +156,33 @@ li.historyListItem:hover {
 span#xAxisLabel {
   font-size: 16px;
   position: absolute;
-  top: 19em;
-  left: 22em;
+  top: 18em;
+  left: 8em;
+  margin: 2em;
 }
 
 span#yAxisLabel {
   font-size: 16px;
   position: absolute;
-  left: 5em;
+  left: -6em;
+  top: 9em;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+}
+
+span#xHighLowAxis {
+  font-size: 16px;
+  position: absolute;
+  top: 18em;
+  left: 8em;
+  margin: 2em;
+}
+
+span#yHighLowAxis {
+  font-size: 16px;
+  position: absolute;
+  left: -8em;
+  top: 9em;
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
 }
