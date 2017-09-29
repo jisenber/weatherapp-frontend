@@ -1,10 +1,13 @@
 import axios from 'axios';
 
+//var API_URL = 'http://localhost:4200'
+var API_URL = 'https://allweather-backend.herokuapp.com';
+
 class AuthService {
   signUp(username, password) {
     axios({
       method: 'post',
-      url: 'http://localhost:4200/signup',
+      url: `${API_URL}/signup`,
       headers: {
         contentType:'application/json',
         dataType:'json'
@@ -25,7 +28,7 @@ class AuthService {
   logIn(username, password, cb) {
     axios({
       method: 'post',
-      url: 'http://localhost:4200/login',
+      url: `${API_URL}login`,
       headers: {
         contentType:'application/json',
         dataType:'json'
@@ -48,7 +51,7 @@ class AuthService {
   addHistoryEvent(username, params) {
     axios({
       method: 'post',
-      url: 'http://localhost:4200/history',
+      url: `${API_URL}/history`,
       headers: {
         contentType:'application/json',
         dataType:'json'
@@ -63,14 +66,14 @@ class AuthService {
       })
       .catch(err => {
         console.log(err);
-        return false
+        return false;
       });
   }
 
   getHistory(username, cb) {
     axios({
       method: 'get',
-      url: `http://localhost:4200/history?user=${username}`
+      url: `${API_URL}/history?user=${username}`
     })
       .then(response => {
         cb(response.data);

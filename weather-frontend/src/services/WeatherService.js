@@ -1,12 +1,15 @@
 import axios from 'axios';
 
+//var API_URL = 'http://localhost:4200'
+var API_URL = 'https://allweather-backend.herokuapp.com';
+
 class WeatherService {
 
   //gets forcast with lat and lng coordinates and provides a callback
   getForecast(lat, lng, cb) {
     axios({
       method: 'get',
-      url: `http://localhost:4200/weather?lat=${lat}&lng=${lng}`
+      url: `${API_URL}/weather?lat=${lat}&lng=${lng}`
     })
       .then(response => {
         if(response.notFound) {
@@ -25,7 +28,7 @@ class WeatherService {
   getCoordinates(location, cb) {
     axios({
       method: 'post',
-      url: 'http://localhost:4200/geolocate',
+      url: `${API_URL}/geolocate`,
       headers: {
         contentType:'application/json',
         dataType:'json'
@@ -48,7 +51,7 @@ class WeatherService {
   getTimeForecast(lat, lng, time, cb) {
     axios({
       method: 'get',
-      url: `http://localhost:4200/timeforecast?lat=${lat}&lng=${lng}&time=${time}`
+      url: `${API_URL}?lat=${lat}&lng=${lng}&time=${time}`
     })
       .then(response => {
         var historicForecast = response.data.daily.data;
