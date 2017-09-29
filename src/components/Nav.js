@@ -91,6 +91,7 @@ class Nav extends Component {
       signUpClicked: false,
       isLoggedIn: true
     });
+    localStorage.setItem('weatherUsername', self.state.username);
   }
 
   //fires after user authenticates with username and password
@@ -106,7 +107,7 @@ class Nav extends Component {
         }
         self.setState({
           isLoggedIn: true,
-          userHistory: data,
+          userHistory: histArr,
           signInClicked: false,
         });
       } //sets a value to localStorage to allow for per

@@ -28,7 +28,7 @@ class AuthService {
   logIn(username, password, cb) {
     axios({
       method: 'post',
-      url: `${API_URL}login`,
+      url: `${API_URL}/login`,
       headers: {
         contentType:'application/json',
         dataType:'json'
@@ -39,7 +39,6 @@ class AuthService {
       }
     })
       .then(history => {
-        console.log(history.data);
         cb(history.data);
       })
       .catch(() => {
