@@ -14,8 +14,8 @@ class AuthService {
         password: password
       }
     })
-      .then(username => {
-        console.log(`${username} added`);
+      .then(()=> {
+        console.log(`success`);
       })
       .catch(err => {
         console.log(err);
@@ -39,8 +39,8 @@ class AuthService {
         console.log(history.data);
         cb(history.data);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
+        alert('Incorrect Username or Password');
         return false;
       });
   }
@@ -63,6 +63,7 @@ class AuthService {
       })
       .catch(err => {
         console.log(err);
+        return false
       });
   }
 
@@ -73,6 +74,10 @@ class AuthService {
     })
       .then(response => {
         cb(response.data);
+      })
+      .catch(err => {
+        console.log(err);
+        return false;
       });
   }
 }

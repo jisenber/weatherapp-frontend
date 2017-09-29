@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import Weather from './Weather';
 import {HistoryLocation, HistoryLatLng, HistoryTimeForecast} from './HistoryItem';
+import AuthService from '../services/AuthService';
 
-//import createReactClass from 'create-react-class';
-import AuthService from './AuthService';
-
+//valides input fields for signup functionality
 function validateSignUp(username, password, passwordRepeat) {
   if(!username || !password || ! passwordRepeat ) {
     return false;
@@ -24,22 +23,26 @@ class Nav extends Component {
 
   }
 
+  //allows for persistence of user after page refresh
   componentDidMount() {
-    console.log('mounted');
     if (localStorage.getItem('weatherUsername')) {
       var self = this;
       var user = localStorage.getItem('weatherUsername');
+      var histArr = [];
       this.AuthService.getHistory(user, function(data) {
-        console.log(data);
+        while(data.length) { //reverse history array so most recent values show at top
+          histArr.push(data.pop());
+        }
         self.setState ({
           username: user,
           isLoggedIn: true,
-          userHistory: data
-        })
-      })
+          userHistory: histArr
+        });
+      });
     }
   }
 
+  //View and hide history dropdown menu based on value of a state prop
   toggleDisplayHistory(event) {
     event.preventDefault();
     if(this.state.displayHistory) {
@@ -73,12 +76,12 @@ class Nav extends Component {
     event.preventDefault();
 
     //validation steps
-    var validSignUp = validateSignUp(this.state.username, this.state.password, this.state.passwordRepeat)
+    var validSignUp = validateSignUp(this.state.username, this.state.password, this.state.passwordRepeat);
     if(!validSignUp) {
-      alert('invalid username or password')
-      return
+      alert('invalid username or password');
+      return;
     } else if (validSignUp === 'Passwords do not match') {
-      alert('passwords do not match')
+      alert('passwords do not match');
       return;
     }
 
@@ -90,18 +93,23 @@ class Nav extends Component {
     });
   }
 
+  //fires after user authenticates with username and password
   handleLogIn(event) {
 
     event.preventDefault();
     var self = this; //takes 'this' reference the component
     self.AuthService.logIn(this.state.username, this.state.password, function(data) {
       if(data) {
+        var histArr = [];
+        while(data.length) {
+          histArr.push(data.pop());
+        }
         self.setState({
           isLoggedIn: true,
           userHistory: data,
           signInClicked: false,
         });
-      }
+      } //sets a value to localStorage to allow for per
       localStorage.setItem('weatherUsername', self.state.username);
     });
   }
@@ -135,74 +143,77 @@ class Nav extends Component {
       username: '',
       password: ''
     });
-    username.value = ''
-    password.value = ''
+    username.value = '';
+    password.value = '';
   }
 
 
   render () {
     return (
       <div className="container-fluid">
-      <div className="navContainer">
-        <nav className="navbar navbar-default navbar-fixed-top">
+        <div className="navContainer">
+          <nav className="navbar navbar-default navbar-fixed-top">
+            <div className="authedNav"  style={{display: this.state.isLoggedIn ? 'inline': 'none'}}>
+              <ul id="nav_pills" className="nav nav-pills" role="tablist">
+                <li><button type="button" className="btn btn-primary" value="Log Out" onClick={this.logout.bind(this)}>Log Out</button>
+                </li>
+                <li>
+                  <div className="dropdown">
+                    <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleDisplayHistory.bind(this)}>View History</button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{display: this.state.displayHistory ? 'inline' : 'none'}}>
+                      <ul className="historyList">
+                        {
+                          this.state.userHistory.map(function(item, i){
+                            if(item.weatherDate) {
+                              return <HistoryTimeForecast key={i} date={item.dateSearched} forecastDate={item.weatherDate.slice(0,19)} location={item.locationSearched} />
+                            }
+                            if(item.locationSearched.lat) {
+                              return <HistoryLatLng key={i} date={item.dateSearched} lat ={item.locationSearched.lat} lng={item.locationSearched.lng}/>
+                            } else {
+                              return <HistoryLocation key={i} date={item.dateSearched} location={item.locationSearched}/>
+                            }
+                          })
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
 
-          <div className="authedNav"  style={{display: this.state.isLoggedIn ? 'inline': 'none'}}>
-            <ul id="nav_pills" className="nav nav-pills" role="tablist">
-              <li><button type="button" className="btn btn-primary" value="Log Out" onClick={this.logout.bind(this)}>Log Out</button>
-              </li>
-              <li>
-                <div className="dropdown">
-                  <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleDisplayHistory.bind(this)}>View History</button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{display: this.state.displayHistory ? 'inline' : 'none'}}>
-                    <ul className="historyList">
-                  {
-                    this.state.userHistory.map(function(item, i){
-                      if(item.weatherDate) {
-                        return <HistoryTimeForecast key={i} date={item.dateSearched} forecastDate={item.weatherDate.slice(0,19)} location={item.locationSearched} />
-                      }
-                      if(item.locationSearched.lat) {
-                        return <HistoryLatLng key={i} date={item.dateSearched} lat ={item.locationSearched.lat} lng={item.locationSearched.lng}/>
-                      } else {
-                        return <HistoryLocation key={i} date={item.dateSearched} location={item.locationSearched}/>
-                      }
-                    })
-                 }
-                  </ul>
-                </div>
+            <div className="unauthedNav" style={{display: !this.state.isLoggedIn ? 'inline': 'none'}}>
+              <ul id="nav_pills" className="nav nav-pills" role="tablist">
+                <li><button type="button" className="btn btn-primary" value="Sign In" onClick={this.isClicked.bind(this)}>Sign In</button>
+                </li>
+                <li><button type="button" className="btn btn-primary" value="Sign Up" onClick={this.isClicked.bind(this)}>Sign up</button></li>
+              </ul>
+            </div>
+
+            <form name="authForm">
+              <div className = "signUpDisplay" style={{display: this.state.signUpClicked ? 'inline' : 'none'}}>
+                <input type="text" placeholder="username" onChange={this.handleUsernameChange.bind(this)} required/>
+                <input type="password" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
+                <input type="password" placeholder = "repeat password" onChange={this.handlePasswordRepeatChange.bind(this)}/>
+                <button type="submit" className = "btn btn-primary" id="signUpBtn" onClick={this.handleSignUp.bind(this)}>Submit</button>
               </div>
-              </li>
-            </ul>
-          </div>
 
-          <div className="unauthedNav" style={{display: !this.state.isLoggedIn ? 'inline': 'none'}}>
-            <ul id="nav_pills" className="nav nav-pills" role="tablist">
-              <li><button type="button" className="btn btn-primary" value="Sign In" onClick={this.isClicked.bind(this)}>Sign In</button>
-              </li>
-              <li><button type="button" className="btn btn-primary" value="Sign Up" onClick={this.isClicked.bind(this)}>Sign up</button></li>
-            </ul>
-          </div>
-
-          <form name="authForm">
-            <div className = "signUpDisplay" style={{display: this.state.signUpClicked ? 'inline' : 'none'}}>
-              <input type="text" placeholder="username" onChange={this.handleUsernameChange.bind(this)} required/>
-              <input type="password" placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
-              <input type="password" placeholder = "repeat password" onChange={this.handlePasswordRepeatChange.bind(this)}/>
-              <button type="submit" className = "btn btn-primary" id="signUpBtn" onClick={this.handleSignUp.bind(this)}>Submit</button>
+              <div className = "signInDisplay" style={{display: this.state.signInClicked ? 'inline' : 'none'}}>
+                <input type="text" ref='username' placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
+                <input type="password" ref='password' placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
+                <button type="submit" className = "btn btn-primary" id="signInBtn" onClick={this.handleLogIn.bind(this)}>Submit</button>
+              </div>
+            </form>
+            <div className="github">
+              <span>We're open source!</span><br/>
+              <a href="https://github.com/jisenber/weatherapp-frontend"><i className="fa fa-github-square fa-2x"></i></a>
             </div>
-
-            <div className = "signInDisplay" style={{display: this.state.signInClicked ? 'inline' : 'none'}}>
-              <input type="text" ref='username' placeholder = "username" onChange={this.handleUsernameChange.bind(this)} required/>
-              <input type="password" ref='password' placeholder = "password" onChange={this.handlePasswordChange.bind(this)} required/>
-              <button type="submit" className = "btn btn-primary" id="signInBtn" onClick={this.handleLogIn.bind(this)}>Submit</button>
-            </div>
-          </form>
-        </nav>
+          </nav>
+        </div>
+        <div className="weatherContainer">
+          <h2 className="weatherTitle">Welcome to Weather Checker</h2><br />
+          <Weather username={this.state.username} history={this.state.userHistory} isLoggedIn={this.state.isLoggedIn} />
+        </div>
       </div>
-      <div className="weatherContainer">
-        <h2 className="weatherTitle">Welcome to Weather Checker</h2><br />
-      <Weather username={this.state.username} history={this.state.userHistory} isLoggedIn={this.state.isLoggedIn} />
-      </div>
-    </div>
     );
   }
 }

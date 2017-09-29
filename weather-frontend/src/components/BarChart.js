@@ -5,10 +5,10 @@ class BarChart extends Component {
   render () {
     return (
       <XYPlot
-      width={500}
-      height={300}
-      xDomain ={[0,4]}
-      yDomain = {[0,100]}
+        width={500}
+        height={300}
+        xDomain ={[0,4]}
+        yDomain = {[0,100]}
       >
         <HorizontalGridLines />
         <VerticalBarSeries
@@ -16,7 +16,7 @@ class BarChart extends Component {
         <XAxis tickValues = {[0,1,2,3,4]}/>
         <YAxis/>
       </XYPlot>
-    )
+    );
   }
 }
 
