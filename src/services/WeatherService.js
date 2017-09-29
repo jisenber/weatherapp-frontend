@@ -51,7 +51,7 @@ class WeatherService {
   getTimeForecast(lat, lng, time, cb) {
     axios({
       method: 'get',
-      url: `${API_URL}?lat=${lat}&lng=${lng}&time=${time}`
+      url: `${API_URL}/timeforecast?lat=${lat}&lng=${lng}&time=${time}`
     })
       .then(response => {
         var historicForecast = response.data.daily.data;
